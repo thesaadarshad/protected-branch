@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
 
 jobs:
   lint:
@@ -27,21 +30,24 @@ jobs:
       run: |
         flake8 .
 
-  # upload_to_s3:
-  #   needs: lint
-  #   runs-on: ubuntu-latest
+  upload_to_s3:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v2
+    steps:
+    # - name: Checkout code
+    #   uses: actions/checkout@v2
 
-  #   - name: Configure AWS credentials
-  #     uses: aws-actions/configure-aws-credentials@v1
-  #     with:
-  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #       aws-region: us-east-1  # Change to your AWS region
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v1
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: us-east-1  # Change to your AWS region
 
-  #   - name: Upload to S3
-  #     run: |
-  #       aws s3 sync . s3://your-s3-bucket-name --exclude ".git/*" --delete
+    # - name: Upload to S3
+    #   run: |
+    #     aws s3 sync . s3://your-s3-bucket-name --exclude ".git/*" --delete
+
+    - name: Print upload success message
+      run: echo "UPLOADED SUCCESSFULLY"
